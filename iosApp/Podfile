@@ -1,0 +1,17 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'iosApp' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for iosApp
+  
+  pod 'app', :path => '/Users/alexandre/Development/HubbleApp/app'
+
+  target 'iosAppTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end

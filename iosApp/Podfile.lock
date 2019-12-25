@@ -1,0 +1,16 @@
+PODS:
+  - app (1.0)
+
+DEPENDENCIES:
+  - app (from `/Users/alexandre/Development/HubbleApp/app`)
+
+EXTERNAL SOURCES:
+  app:
+    :path: "/Users/alexandre/Development/HubbleApp/app"
+
+SPEC CHECKSUMS:
+  app: d9ff18ae7f412f9f315ffcc55d7ea34ae0c19dae
+
+PODFILE CHECKSUM: 7a79dd20927463f39f219070452c73145c5a81d6
+
+COCOAPODS: 1.8.4

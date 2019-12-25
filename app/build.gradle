@@ -1,0 +1,114 @@
+plugins {
+    id 'org.jetbrains.kotlin.multiplatform'
+    id "org.jetbrains.kotlin.native.cocoapods"
+}
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId 'org.jetbrains.kotlin.mpp_app_android'
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName '1.0'
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+version = "1.0"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}
+
+def coroutines_version = "1.3.2-1.3.60"
+
+kotlin {
+    android("android")
+    // This is for iPhone emulator
+    // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
+    iosX64("ios") {
+        binaries.debugFramework {
+            freeCompilerArgs = freeCompilerArgs + ["-Xobjc-generics"]
+        }
+
+        binaries.releaseFramework {
+            freeCompilerArgs = freeCompilerArgs + ["-Xobjc-generics"]
+        }
+    }
+
+    iosArm64 {
+        binaries.debugFramework {
+            freeCompilerArgs = freeCompilerArgs + ["-Xobjc-generics"]
+        }
+
+        binaries.releaseFramework {
+            freeCompilerArgs = freeCompilerArgs + ["-Xobjc-generics"]
+        }
+    }
+
+    cocoapods {
+        // Configure fields required by CocoaPods.
+        summary = "Some description for a Kotlin/Native module"
+        homepage = "Link to a Kotlin/Native module homepage"
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+
+                api project(":mvvm")
+                implementation project(":hubblesite-client")
+            }
+        }
+        commonTest {
+            dependencies {
+        		implementation kotlin('test-common')
+        		implementation kotlin('test-annotations-common')
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation kotlin('stdlib')
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+            }
+        }
+        androidTest {
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-junit')
+            }
+        }
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$coroutines_version"
+            }
+
+
+        }
+        iosTest {
+        }
+
+        iosArm64Main {
+            dependsOn iosMain
+        }
+    }
+}
+

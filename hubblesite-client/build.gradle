@@ -1,0 +1,90 @@
+plugins {
+    id "org.jetbrains.kotlin.multiplatform"
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.3.61'
+
+}
+repositories {
+    mavenCentral()
+    google()
+    jcenter()
+}
+group 'io.monkeypatch'
+version '0.0.1'
+
+apply plugin: 'maven-publish'
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+    }
+}
+
+def ktor_version="1.2.6"
+def serialization_version="0.14.0"
+
+
+kotlin {
+    android("android")
+    iosX64("ios")
+    iosArm64()
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+
+                implementation "io.ktor:ktor-client-core:$ktor_version"
+                implementation("io.ktor:ktor-client-json:$ktor_version")
+                implementation("io.ktor:ktor-client-serialization:$ktor_version")
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version"
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation kotlin('stdlib-jdk8')
+
+                implementation "io.ktor:ktor-client-core-jvm:$ktor_version"
+                implementation "io.ktor:ktor-client-android:$ktor_version"
+                implementation("io.ktor:ktor-client-json-jvm:$ktor_version")
+
+                implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
+
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version"
+
+            }
+        }
+        androidTest {
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-junit')
+            }
+        }
+
+        iosMain {
+            dependencies {
+                implementation "io.ktor:ktor-client-core-native:$ktor_version"
+                implementation("io.ktor:ktor-client-ios:$ktor_version")
+                implementation("io.ktor:ktor-client-json-native:$ktor_version")
+
+                implementation("io.ktor:ktor-client-serialization-native:$ktor_version")
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version"
+            }
+
+        }
+        iosTest {
+        }
+
+        iosArm64Main {
+            dependsOn iosMain
+        }
+
+    }
+}
