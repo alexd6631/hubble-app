@@ -77,6 +77,8 @@ fileprivate struct FilterBar : View {
     
     var body: some View {
         HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.secondary)
             TextField("Filter", text: self.filterBinding.animation())
                 
                 .foregroundColor(.secondary)

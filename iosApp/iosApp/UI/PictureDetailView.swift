@@ -14,16 +14,20 @@ struct PictureDetailView : View {
     let viewModel: PictureDetailViewModel
     @ObservedObject var observer: LiveDataObserver
     
-    @State var descriptionVisible = false
+    @State var descriptionIsPresented = false
     
     var body: some View {
         print("Rendering detail view \(title)")
         return ZStack {
             viewModel.detail.value.map { p in PictureDetailContentView(picture: p) }
+            
+            if viewModel.detail.value == nil {
+                CircleActivityView().frame(width: 50, height: 50)
             }
-            .sheet(isPresented: $descriptionVisible) {
-                    PictureInfoView(detail: self.viewModel.detail.value?.pictureDescription ?? "")
-            }
+        }
+        .sheet(isPresented: $descriptionIsPresented) {
+            PictureInfoView(detail: self.viewModel.detail.value?.pictureDescription ?? "")
+        }
         .navigationBarTitle(title)
         .navigationBarItems(trailing: navigationBarItem())
         .observe(observer: observer)
@@ -37,11 +41,11 @@ struct PictureDetailView : View {
     
     func navigationBarItem() -> some View {
         HStack {
-            if (viewModel.detail.value != nil) {
+            if (viewModel.detail.value != nil && viewModel.detail.value?.pictureDescription != nil) {
                 Button(action: {
-                    self.descriptionVisible = true
+                    self.descriptionIsPresented = true
                 }, label: {
-                    Text("Infos")
+                    Image(systemName: "info.circle.fill")
                 })
             }
         }
@@ -86,9 +90,7 @@ fileprivate struct PictureDetailContentView : View {
         
         return ZStack {
             if url != nil {
-                URLImage(url!, placeholder: { _ in
-                    CircleActivityView().frame(width: 50, height: 50)
-                }) { proxy in
+                URLImage(url!) { proxy in
                     proxy.image.resizable().aspectRatio(contentMode: .fit)
                         
                         .gesture(DragGesture().onChanged { value in

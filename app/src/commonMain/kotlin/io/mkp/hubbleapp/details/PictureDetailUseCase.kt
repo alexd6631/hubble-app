@@ -5,7 +5,7 @@ import io.mkp.hubbleapp.utils.retryBackoff
 import kotlinx.coroutines.flow.*
 
 data class HubblePictureDetail(
-    val pictureDescription: String,
+    val pictureDescription: String?,
     val imageUrl: String?
 )
 

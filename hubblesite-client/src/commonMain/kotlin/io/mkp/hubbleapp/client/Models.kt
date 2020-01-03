@@ -15,7 +15,7 @@ data class ImageMeta(
 @Serializable
 data class ImageDetails(
     val name: String,
-    val description: String,
+    val description: String? = null,
     @SerialName("image_files")
     val imageFiles: List<ImageFile> = emptyList()
 )

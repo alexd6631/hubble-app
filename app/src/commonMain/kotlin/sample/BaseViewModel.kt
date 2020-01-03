@@ -9,7 +9,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
-
+@UseExperimental(ExperimentalCoroutinesApi::class)
 abstract class BaseViewModel(
     protected val uiDispatcher: CoroutineDispatcher
 ) : KViewModel(), CoroutineScope by CoroutineScope(SupervisorJob() + uiDispatcher) {
@@ -37,7 +37,7 @@ abstract class BaseViewModel(
         }
     }
 
-    fun <T> KLiveData<T>.asFlow(): Flow<T> = kotlinx.coroutines.flow.callbackFlow {
+    fun <T> KLiveData<T>.asFlow(): Flow<T> = callbackFlow {
         val d = observeForever { offer(it) }
         awaitClose { d.dispose() }
     }

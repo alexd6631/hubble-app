@@ -22,11 +22,10 @@ class ListPicturesUseCase(
             filterPictures(pics, f)
         }
 
-    private fun fetchPictures(): Flow<List<HubblePicture>> {
-        return repository::getHubblePictures.asFlow()
+    private fun fetchPictures(): Flow<List<HubblePicture>> =
+        repository::getHubblePictures.asFlow()
             .log("picture list")
             .retryBackoff(100, 5000)
-    }
 }
 
 private fun filterPictures(

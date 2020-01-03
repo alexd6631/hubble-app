@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav_graph"
+        app:startDestination="@id/listPicturesFragment">
+    <fragment
+            android:id="@+id/listPicturesFragment"
+            android:name="io.mkp.hubbleapp.ListPicturesFragment"
+            android:label="ListPicturesFragment" >
+        <action
+                android:id="@+id/action_listPicturesFragment_to_pictureDetailFragment"
+                app:destination="@id/pictureDetailFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/pictureDetailFragment"
+            android:name="io.mkp.hubbleapp.PictureDetailFragment"
+            android:label="PictureDetailFragment" />
+</navigation>

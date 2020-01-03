@@ -10,21 +10,17 @@ private const val host = "hubblesite.org"
 
 class HubbleClient(private val client: HttpClient) {
     suspend fun getImageMetadata(page: Int): List<ImageMeta> {
-
         val url = URLBuilder(host = host).path("api", "v3", "images", "all").apply {
             parameters.append("page", page.toString())
         }.build()
 
-        return client.get<String>(url)
-            .let { Json.nonstrict.parse(ImageMeta.serializer().list, it) }
+        return Json.nonstrict.parse(ImageMeta.serializer().list, client.get(url))
     }
 
     suspend fun getImageDetails(id: String): ImageDetails {
         val url = URLBuilder(host = host).path("api", "v3", "image", id).build()
 
-        return client.get<String>(url)
-            .let { Json.nonstrict.parse(ImageDetails.serializer(), it) }
+        return Json.nonstrict.parse(ImageDetails.serializer(), client.get(url))
     }
 }
-
 
