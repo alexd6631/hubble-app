@@ -1,14 +1,9 @@
 package io.mkp.hubbleapp.list
 
+import io.mkp.hubbleapp.HubblePicture
 import io.mkp.hubbleapp.utils.log
 import io.mkp.hubbleapp.utils.retryBackoff
 import kotlinx.coroutines.flow.*
-
-data class HubblePicture(
-    val id: String,
-    val name: String,
-    val mission: String
-)
 
 interface PicturesRepository {
     suspend fun getHubblePictures(): List<HubblePicture>

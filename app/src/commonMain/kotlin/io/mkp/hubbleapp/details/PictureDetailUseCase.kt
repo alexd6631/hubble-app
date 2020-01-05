@@ -1,13 +1,9 @@
 package io.mkp.hubbleapp.details
 
+import io.mkp.hubbleapp.HubblePictureDetail
 import io.mkp.hubbleapp.utils.log
 import io.mkp.hubbleapp.utils.retryBackoff
 import kotlinx.coroutines.flow.*
-
-data class HubblePictureDetail(
-    val pictureDescription: String?,
-    val imageUrl: String?
-)
 
 interface PictureDetailRepository {
     suspend fun getPictureDetail(id: String): HubblePictureDetail

@@ -79,9 +79,11 @@ fileprivate struct FilterBar : View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
-            TextField("Filter", text: self.filterBinding.animation())
-                
+            TextField("Filter", text: self.filterBinding)
+            
                 .foregroundColor(.secondary)
+                .disableAutocorrection(true)
+            
             
             if (filterBinding.wrappedValue != "") {
                 Button(action: {
@@ -142,14 +144,31 @@ extension HubblePicture : Identifiable {}
 struct ListPicturesContentView_Previews: PreviewProvider {
     
     static var previews: some View {
-        NavigationView {
-            ListPicturesViewContentDemo()
+        Group {
+            previewLightAndDark {
+                NavigationView {
+                     ListPicturesViewContentDemo()
+                }
+            }.previewDisplayName("Picture list")
+            
+            previewLightAndDark {
+                NavigationView {
+                    ListPicturesViewContentDemoLoading()
+                }
+            }.previewDisplayName("Loading")
+            
         }
-        
     }
 }
 
-struct ListPicturesViewContentDemo : View {
+func previewLightAndDark<V : View>(view: () -> V) -> some View {
+    Group {
+        view()
+        view().environment(\.colorScheme, .dark)
+    }
+}
+
+fileprivate struct ListPicturesViewContentDemo : View {
     @State var filter: String = ""
     
     var body: some View {
@@ -163,6 +182,18 @@ struct ListPicturesViewContentDemo : View {
                  HubblePicture(id: "4", name: "Test 4", mission: "Hubble")
             ],
             loading: false
+        )
+    }
+}
+
+fileprivate struct ListPicturesViewContentDemoLoading : View {
+    @State var filter: String = ""
+    
+    var body: some View {
+        ListPicturesViewContent(
+            filterBinding: $filter,
+            pictures: [],
+            loading: true
         )
     }
 }

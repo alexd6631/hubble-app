@@ -1,5 +1,6 @@
 package io.mkp.hubbleapp.details
 
+import io.mkp.hubbleapp.HubblePictureDetail
 import io.mkp.hubbleapp.client.HubbleClient
 
 class PictureDetailRepositoryImpl(
@@ -7,7 +8,7 @@ class PictureDetailRepositoryImpl(
 ) : PictureDetailRepository {
     override suspend fun getPictureDetail(id: String): HubblePictureDetail {
         val details = hubbleClient.getImageDetails(id)
-        val highRes = details.imageFiles.maxBy { it.fileSize }
+        val highRes = details.imageFiles.minBy { it.fileSize }
 
         return HubblePictureDetail(
             details.description,
