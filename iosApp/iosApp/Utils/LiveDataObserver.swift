@@ -10,21 +10,37 @@ import app
 import SwiftUI
 import Combine
 
-class LiveDataObserver : ObservableObject {
-    let objectWillChange = ObservableObjectPublisher()
+class ViewModelObserver : ObservableObject {
+    let subject = ObservableObjectPublisher()
+    
+    let objectWillChange: AnyPublisher<(), Never>
+    //var objectWillChange =
     
     let liveDatas: [MvvmKLiveData<AnyObject>]
     var disposables: [MvvmDisposable] = []
-    init(_ liveDatas: [MvvmKLiveData<AnyObject>]) {
+    
+    init(_ vm: BaseViewModel) {
+        print("LiveDataObserver inited")
+        self.liveDatas = vm.liveDataList
+    
+        objectWillChange = subject.handleEvents(
+            receiveSubscription: {
+                s in print("Subscription \(s)")
+        }, receiveCancel: {
+            print("Cancel")
+        }).eraseToAnyPublisher()
+    }
+    
+    /*init(_ liveDatas: [MvvmKLiveData<AnyObject>]) {
         print("LiveDataObserver inited")
         self.liveDatas = liveDatas
-    }
+    }*/
     
     func startObserving() {
         stopObserving()
         self.disposables = liveDatas.map { [unowned self] ld in ld.observeForever { _ in
             print("objectWillChange")
-            self.objectWillChange.send()
+            self.subject.send()
             }
         }
     }
@@ -42,15 +58,6 @@ class LiveDataObserver : ObservableObject {
     }
 }
 
-class VmLiveDataObserver<T> : LiveDataObserver {
-    let viewModel: T
-    
-    init(_ liveDatas: [MvvmKLiveData<AnyObject>], viewModel: T) {
-        self.viewModel = viewModel
-        super.init(liveDatas)
-        
-    }
-}
 
 extension MvvmKLiveData{
     @objc func eraseType() ->  MvvmKLiveData<AnyObject>{
@@ -59,7 +66,7 @@ extension MvvmKLiveData{
 }
 
 extension View {
-    func observe(observer: LiveDataObserver) -> some View {
+    func observe(observer: ViewModelObserver) -> some View {
         onAppear {
             observer.startObserving()
             print("Appear")
@@ -76,4 +83,10 @@ func bindingFor(ld: MvvmKMutableLiveData<NSString>) -> Binding<String> {
     }, set: { (v: String) in
         ld.value = v as NSString
     })
+}
+
+extension BaseViewModel {
+    func observer() -> ViewModelObserver {
+        ViewModelObserver(self)
+    }
 }

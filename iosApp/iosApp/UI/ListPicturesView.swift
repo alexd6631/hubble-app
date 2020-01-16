@@ -10,52 +10,37 @@ import app
 import URLImage
 
 
-//struct ListPicturesView: View {
-//    var viewModel: ListPicturesViewModel
-//
-//    @ObservedObject var observer: VmLiveDataObserver<ListPicturesViewModel>
-//
-//    var body: some View {
-//        let pictures: [HubblePicture] = observer.viewModel.pictures.value as? [HubblePicture] ?? []
-//        let loading = observer.viewModel.loading.value?.boolValue ?? false
-//
-//        print("Rendering view \(pictures.count)")
-//        print("Disposables \(observer.disposables.count)")
-//
-//        return ListPicturesViewContent(
-//            filterBinding: bindingFor(ld: observer.viewModel.filter),
-//            pictures: pictures, loading: loading
-//        ).accessibility(value: Text(observer.disposables.description))
-//            .observe(observer: observer)
-//    }
-//}
-
 struct ListPicturesView: View {
     var viewModel: ListPicturesViewModel
-
-    @ObservedObject var observer: LiveDataObserver
+    @ObservedObject var observer: ViewModelObserver
 
     var body: some View {
         let pictures: [HubblePicture] = viewModel.pictures.value as? [HubblePicture] ?? []
         let loading = viewModel.loading.value?.boolValue ?? false
 
-        return ListPicturesViewContent(
-            filterBinding: bindingFor(ld: viewModel.filter),
-            pictures: pictures, loading: loading
-        ).accessibility(value: Text(observer.disposables.description))
-            .observe(observer: observer)
+        return Group {
+            ListPicturesViewContent(
+                filter: bindingFor(ld: viewModel.filter),
+                pictures: pictures, loading: loading
+            ).accessibility(value: Text(observer.disposables.description))
+                .observe(observer: observer)
+            
+            Text("Default view")
+        }
+        
+        
     }
 }
 
 fileprivate struct ListPicturesViewContent : View {
-    let filterBinding: Binding<String>
+    @Binding var filter: String
     let pictures: [HubblePicture]
     let loading: Bool
     
     var body: some View {
         ZStack {
             VStack {
-                FilterBar(filterBinding: filterBinding)
+                FilterBar(filter: $filter)
                 
                 List(self.pictures) { p in
                     HubblePictureRow(picture: p)
@@ -73,32 +58,35 @@ fileprivate struct ListPicturesViewContent : View {
 }
 
 fileprivate struct FilterBar : View {
-    let filterBinding: Binding<String>
+    @Binding var filter: String
+//    let filterBinding: Binding<String>
     
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
-            TextField("Filter", text: self.filterBinding)
+            TextField("Filter", text: self.$filter)
             
                 .foregroundColor(.secondary)
                 .disableAutocorrection(true)
             
             
-            if (filterBinding.wrappedValue != "") {
+            //if (filter != "") {
                 Button(action: {
-                    self.filterBinding.wrappedValue = ""
+                    self.filter = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.secondary)
-                }
-            }
+                }.opacity(filter != "" ? 1 : 0)
+                    .animation(.easeOut(duration: 0.3))
+                
+            //}
             
             
         }
-        .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+        .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
         .background(Color(.secondarySystemBackground))
-        .cornerRadius(10.0)
+        .cornerRadius(.infinity)
         .padding(.horizontal)
        
     }
@@ -128,14 +116,10 @@ func createListPictureViewMock() -> ListPicturesView {
 
 func createListPictureView(viewModel: ListPicturesViewModel) -> ListPicturesView {
     
-    let observer = LiveDataObserver([
-        viewModel.pictures.eraseType(),
-        viewModel.loading.eraseType()
-    ])
-    
-    return ListPicturesView(viewModel: viewModel, observer: observer)
-    
-    //return ListPicturesView(observer: observer)
+    ListPicturesView(
+        viewModel: viewModel,
+        observer: viewModel.observer()
+    )
 }
 
 extension HubblePicture : Identifiable {}
@@ -173,7 +157,7 @@ fileprivate struct ListPicturesViewContentDemo : View {
     
     var body: some View {
         ListPicturesViewContent(
-            filterBinding: $filter,
+            filter: $filter,
             pictures: [
                 HubblePicture(id: "1", name: "Test 1", mission: "Hubble"),
                 HubblePicture(id: "2", name: "Test 2",
@@ -191,7 +175,7 @@ fileprivate struct ListPicturesViewContentDemoLoading : View {
     
     var body: some View {
         ListPicturesViewContent(
-            filterBinding: $filter,
+            filter: $filter,
             pictures: [],
             loading: true
         )

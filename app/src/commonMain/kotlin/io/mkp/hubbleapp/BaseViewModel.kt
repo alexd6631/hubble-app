@@ -1,4 +1,4 @@
-package sample
+package io.mkp.hubbleapp
 
 import io.monkeypatch.konfetti.mvvm.KViewModel
 import io.monkeypatch.konfetti.mvvm.livedata.KLiveData
@@ -7,7 +7,6 @@ import io.monkeypatch.konfetti.mvvm.livedata.KMutableLiveData
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
 
 @UseExperimental(ExperimentalCoroutinesApi::class)
 abstract class BaseViewModel(
@@ -41,6 +40,8 @@ abstract class BaseViewModel(
         val d = observeForever { offer(it) }
         awaitClose { d.dispose() }
     }
+
+    abstract val liveDataList: List<KLiveData<*>>
 }
 
 fun <T> KLiveData<T>.loading(): KLiveData<Boolean> = KMediatorLiveData<Boolean>().apply {

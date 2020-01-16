@@ -11,9 +11,8 @@ import URLImage
 struct PictureDetailView : View {
     let title: String
     let viewModel: PictureDetailViewModel
-    @ObservedObject var observer: LiveDataObserver
+    @ObservedObject var observer: ViewModelObserver
     
-   
     var body: some View {
         PictureDetailContentView(
             title: title,
@@ -43,24 +42,11 @@ fileprivate struct PictureDetailContentView : View {
             if detail == nil {
                 CircleActivityView().frame(width: 50, height: 50)
             }
-            
-            VStack {
-                Text(title).font(.title)
-                    .multilineTextAlignment(.center)
-                    .allowsTightening(true)
-                    .minimumScaleFactor(0.5)
-                    .padding(.horizontal)
-                    .lineLimit(2)
-                    .offset(x: 0, y: -40)
-                
-                Spacer()
-            }
-            
         }
         .sheet(isPresented: $descriptionIsPresented) {
             PictureInfoView(detail: self.detail?.pictureDescription ?? "")
         }
-        //.navigationBarTitle(title)
+        .navigationBarTitle(Text(title), displayMode: .inline)
         .navigationBarItems(trailing: navigationBarItem())
     }
     
@@ -95,11 +81,12 @@ fileprivate struct PictureInfoView : View  {
 
 func createPictureDetailView(title: String, id: String) -> PictureDetailView {
     let viewModel = Container().pictureDetailViewModel(id: id)
-    let observer = LiveDataObserver([
-        viewModel.detail.eraseType()
-    ])
     
-    return PictureDetailView(title: title, viewModel: viewModel, observer: observer)
+    return PictureDetailView(
+        title: title,
+        viewModel: viewModel,
+        observer: viewModel.observer()
+    )
 }
 
 fileprivate struct PictureDetailImageView : View {
