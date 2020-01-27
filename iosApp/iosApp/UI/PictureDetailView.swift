@@ -10,21 +10,13 @@ import URLImage
 
 struct PictureDetailView : View {
     let title: String
-    let viewModel: PictureDetailViewModel
-    @ObservedObject var observer: ViewModelObserver
+    @ObservedObject var viewModel: PictureDetailViewModel
     
     var body: some View {
         PictureDetailContentView(
             title: title,
             detail: viewModel.detail.value
         )
-        .observe(observer: observer)
-        .onAppear {
-            print("Detail view appear")
-        }
-        .onDisappear {
-            print("Detail view disappear")
-        }
     }
 
 }
@@ -44,19 +36,25 @@ fileprivate struct PictureDetailContentView : View {
             }
         }
         .sheet(isPresented: $descriptionIsPresented) {
-            PictureInfoView(detail: self.detail?.pictureDescription ?? "")
+            PictureInfoView(
+                title: self.title,
+                detail: self.detail?.pictureDescription ?? ""
+            )
         }
         .navigationBarTitle(Text(title), displayMode: .inline)
         .navigationBarItems(trailing: navigationBarItem())
     }
     
     func navigationBarItem() -> some View {
-           HStack {
+           Group {
                if (detail != nil && detail?.pictureDescription != nil) {
                    Button(action: {
                        self.descriptionIsPresented = true
                    }, label: {
-                       Image(systemName: "info.circle.fill")
+                    HStack {
+                        Image(systemName: "info.circle.fill")
+                        Text("Infos")
+                    }
                    })
                }
            }
@@ -64,18 +62,23 @@ fileprivate struct PictureDetailContentView : View {
 }
 
 fileprivate struct PictureInfoView : View  {
+    let title: String
     let detail: String
-     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("Information").bold().font(.largeTitle)
-            }.padding(.vertical)
-            
+    
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        NavigationView {
             ScrollView {
                 Text(detail)
-            }
-        }.padding()
-        
+            }.padding()
+                .navigationBarTitle(Text(title), displayMode: .inline)
+                .navigationBarItems(leading: Button(action: {
+                    self.presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "xmark")
+                })
+        }
     }
 }
 
@@ -84,8 +87,7 @@ func createPictureDetailView(title: String, id: String) -> PictureDetailView {
     
     return PictureDetailView(
         title: title,
-        viewModel: viewModel,
-        observer: viewModel.observer()
+        viewModel: viewModel
     )
 }
 
@@ -101,7 +103,7 @@ fileprivate struct PictureDetailImageView : View {
         
         return ZStack {
             if url != nil {
-                URLImage(url!) { proxy in
+                URLImage(url!, incremental: true) { proxy in
                     proxy.image.resizable().aspectRatio(contentMode: .fit)
                         
                         .gesture(DragGesture().onChanged { value in
@@ -165,7 +167,7 @@ struct PictureDetailPreview : PreviewProvider {
 struct SheetPreview_Previews: PreviewProvider {
     
     private static func pictureInfoView() -> some View {
-        PictureInfoView(detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+        PictureInfoView(title: "Info", detail: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
     }
     
     static var previews: some View {

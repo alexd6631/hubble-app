@@ -1,5 +1,5 @@
 //
-//  LiveDataObserver.swift
+//  ViewModelObserver.swift
 //  iosApp
 //
 //  Created by Alexandre Delattre on 19/12/2019.
@@ -10,36 +10,57 @@ import app
 import SwiftUI
 import Combine
 
-class ViewModelObserver : ObservableObject {
-    let subject = ObservableObjectPublisher()
+extension BaseViewModel : ObservableObject {
     
-    let objectWillChange: AnyPublisher<(), Never>
+    public var objectWillChange: AnyPublisher<(), Never> {
+        get {
+            if let observer = self.swiftData as? ViewModelObserver {
+                return observer.objectWillChange
+            } else {
+                let observer = ViewModelObserver(self)
+                self.swiftData = observer
+                return observer.objectWillChange
+            }
+        }
+    }
+}
+
+class ViewModelObserver {
+    private let subject = ObservableObjectPublisher()
+    
+    private(set) var objectWillChange: AnyPublisher<(), Never> = Empty().eraseToAnyPublisher()
     //var objectWillChange =
+    private var subscriptionCount = 0
     
-    let liveDatas: [MvvmKLiveData<AnyObject>]
-    var disposables: [MvvmDisposable] = []
+    private let liveDatas: [MvvmKLiveData<AnyObject>]
+    private var disposables: [MvvmDisposable] = []
     
     init(_ vm: BaseViewModel) {
-        print("LiveDataObserver inited")
         self.liveDatas = vm.liveDataList
     
         objectWillChange = subject.handleEvents(
-            receiveSubscription: {
-                s in print("Subscription \(s)")
-        }, receiveCancel: {
-            print("Cancel")
+            receiveSubscription: { [weak self] s in
+                if let self = self {
+                    self.subscriptionCount += 1
+                    if self.subscriptionCount == 1 {
+                        self.startObserving()
+                    }
+                }
+                
+                
+        }, receiveCancel: { [weak self] in
+            if let self = self {
+                self.subscriptionCount -= 1
+                if self.subscriptionCount == 0 {
+                    self.stopObserving()
+                }
+            }
         }).eraseToAnyPublisher()
     }
-    
-    /*init(_ liveDatas: [MvvmKLiveData<AnyObject>]) {
-        print("LiveDataObserver inited")
-        self.liveDatas = liveDatas
-    }*/
     
     func startObserving() {
         stopObserving()
         self.disposables = liveDatas.map { [unowned self] ld in ld.observeForever { _ in
-            print("objectWillChange")
             self.subject.send()
             }
         }
@@ -53,7 +74,6 @@ class ViewModelObserver : ObservableObject {
     }
     
     deinit {
-        print("LiveDataObserver deinited")
         stopObserving()
     }
 }
@@ -69,9 +89,7 @@ extension View {
     func observe(observer: ViewModelObserver) -> some View {
         onAppear {
             observer.startObserving()
-            print("Appear")
         }.onDisappear() {
-            print("Disappear")
             observer.stopObserving()
         }
     }

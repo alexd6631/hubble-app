@@ -8,11 +8,11 @@ class PictureDetailRepositoryImpl(
 ) : PictureDetailRepository {
     override suspend fun getPictureDetail(id: String): HubblePictureDetail {
         val details = hubbleClient.getImageDetails(id)
-        val highRes = details.imageFiles.minBy { it.fileSize }
+        val firstPicture = details.imageFiles.minBy { it.fileSize }
 
         return HubblePictureDetail(
             details.description,
-            highRes?.fileUrl?.prefixHttps()
+            firstPicture?.fileUrl?.prefixHttps()
         )
     }
 }

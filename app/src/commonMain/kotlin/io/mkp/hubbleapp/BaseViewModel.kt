@@ -42,6 +42,8 @@ abstract class BaseViewModel(
     }
 
     abstract val liveDataList: List<KLiveData<*>>
+
+    var swiftData: Any? = null
 }
 
 fun <T> KLiveData<T>.loading(): KLiveData<Boolean> = KMediatorLiveData<Boolean>().apply {

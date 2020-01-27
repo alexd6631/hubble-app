@@ -11,8 +11,7 @@ import URLImage
 
 
 struct ListPicturesView: View {
-    var viewModel: ListPicturesViewModel
-    @ObservedObject var observer: ViewModelObserver
+    @ObservedObject var viewModel: ListPicturesViewModel
 
     var body: some View {
         let pictures: [HubblePicture] = viewModel.pictures.value as? [HubblePicture] ?? []
@@ -22,13 +21,9 @@ struct ListPicturesView: View {
             ListPicturesViewContent(
                 filter: bindingFor(ld: viewModel.filter),
                 pictures: pictures, loading: loading
-            ).accessibility(value: Text(observer.disposables.description))
-                .observe(observer: observer)
-            
+            )
             Text("Default view")
         }
-        
-        
     }
 }
 
@@ -51,6 +46,7 @@ fileprivate struct ListPicturesViewContent : View {
                 .opacity(self.loading ? 1.0 : 0.0)
                 .frame(width: 50.0, height: 50.0)
         }
+        .modifier(AdaptsToSoftwareKeyboard())
         .navigationBarTitle("Hubble pictures")
         
         
@@ -59,30 +55,23 @@ fileprivate struct ListPicturesViewContent : View {
 
 fileprivate struct FilterBar : View {
     @Binding var filter: String
-//    let filterBinding: Binding<String>
     
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
             TextField("Filter", text: self.$filter)
-            
+                .autocapitalization(.none)
                 .foregroundColor(.secondary)
                 .disableAutocorrection(true)
             
-            
-            //if (filter != "") {
-                Button(action: {
-                    self.filter = ""
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
-                }.opacity(filter != "" ? 1 : 0)
-                    .animation(.easeOut(duration: 0.3))
-                
-            //}
-            
-            
+            Button(action: {
+                self.filter = ""
+            }) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundColor(.secondary)
+            }.opacity(filter != "" ? 1 : 0)
+                .animation(.easeOut(duration: 0.3))
         }
         .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
         .background(Color(.secondarySystemBackground))
@@ -100,8 +89,6 @@ fileprivate struct HubblePictureRow : View {
             HStack {
                 Text(self.picture.name)
             }
-        }.onAppear {
-            print("Row appeared \(self.picture.name)")
         }
     }
 }
@@ -117,8 +104,7 @@ func createListPictureViewMock() -> ListPicturesView {
 func createListPictureView(viewModel: ListPicturesViewModel) -> ListPicturesView {
     
     ListPicturesView(
-        viewModel: viewModel,
-        observer: viewModel.observer()
+        viewModel: viewModel
     )
 }
 
