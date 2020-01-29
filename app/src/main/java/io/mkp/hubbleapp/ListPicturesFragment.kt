@@ -8,8 +8,6 @@ import android.widget.LinearLayout
 import androidx.compose.*
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.ui.core.Text
 import androidx.ui.core.TextField
@@ -26,6 +24,7 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.tooling.preview.Preview
 import io.mkp.hubbleapp.list.ListPicturesViewModel
+import io.mkp.hubbleapp.models.HubblePicture
 import io.mkp.hubbleapp.utils.observe
 import io.monkeypatch.konfetti.mvvm.livedata.toLivedata
 

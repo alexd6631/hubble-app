@@ -1,6 +1,6 @@
 package io.mkp.hubbleapp.details
 
-import io.mkp.hubbleapp.HubblePictureDetail
+import io.mkp.hubbleapp.models.HubblePictureDetail
 import io.mkp.hubbleapp.utils.log
 import io.mkp.hubbleapp.utils.retryBackoff
 import kotlinx.coroutines.flow.*

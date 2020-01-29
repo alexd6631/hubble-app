@@ -12,6 +12,6 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             createListPictureView()
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -1,4 +1,4 @@
-package io.mkp.hubbleapp
+package io.mkp.hubbleapp.models
 
 data class HubblePicture(
     val id: String,

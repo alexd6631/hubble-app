@@ -1,13 +1,9 @@
 package io.mkp.hubbleapp.list
 
-import io.mkp.hubbleapp.HubblePicture
+import io.mkp.hubbleapp.models.HubblePicture
 import io.mkp.hubbleapp.utils.log
 import io.mkp.hubbleapp.utils.retryBackoff
 import kotlinx.coroutines.flow.*
-
-interface PicturesRepository {
-    suspend fun getHubblePictures(): List<HubblePicture>
-}
 
 class ListPicturesUseCase(
     private val repository: PicturesRepository
@@ -27,3 +23,7 @@ private fun filterPictures(
     pictures: List<HubblePicture>,
     filter: String
 ) = pictures.filter { it.name.contains(filter, ignoreCase = true) }
+
+interface PicturesRepository {
+    suspend fun getHubblePictures(): List<HubblePicture>
+}

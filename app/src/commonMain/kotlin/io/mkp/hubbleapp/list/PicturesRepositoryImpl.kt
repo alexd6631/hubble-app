@@ -1,6 +1,6 @@
 package io.mkp.hubbleapp.list
 
-import io.mkp.hubbleapp.HubblePicture
+import io.mkp.hubbleapp.models.HubblePicture
 import io.mkp.hubbleapp.client.HubbleClient
 import io.mkp.hubbleapp.utils.mapConcurrent
 

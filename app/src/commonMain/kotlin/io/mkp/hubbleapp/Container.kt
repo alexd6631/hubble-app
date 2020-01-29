@@ -6,6 +6,7 @@ import io.mkp.hubbleapp.details.PictureDetailRepositoryImpl
 import io.mkp.hubbleapp.details.PictureDetailUseCase
 import io.mkp.hubbleapp.details.PictureDetailViewModel
 import io.mkp.hubbleapp.list.*
+import io.mkp.hubbleapp.models.HubblePicture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlin.native.concurrent.ThreadLocal
