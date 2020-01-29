@@ -43,8 +43,8 @@ fileprivate struct ListPicturesViewContent : View {
             }
             
             CircleActivityView()
-                .opacity(self.loading ? 1.0 : 0.0)
                 .frame(width: 50.0, height: 50.0)
+                .opacity(self.loading ? 1.0 : 0.0)
         }
         .modifier(AdaptsToSoftwareKeyboard())
         .navigationBarTitle("Hubble pictures")

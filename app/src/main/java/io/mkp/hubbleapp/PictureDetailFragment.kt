@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.unaryPlus
 import androidx.fragment.app.Fragment
+import androidx.ui.core.dp
 import androidx.ui.core.setContent
 import androidx.ui.foundation.DrawImage
-import androidx.ui.layout.Column
-import androidx.ui.layout.CrossAxisAlignment
-import androidx.ui.layout.MainAxisAlignment
+import androidx.ui.foundation.SimpleImage
+import androidx.ui.layout.*
 import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.MaterialTheme
 import io.mkp.hubbleapp.utils.image
@@ -35,7 +35,9 @@ class PictureDetailFragment : Fragment() {
                 if (detail != null) {
                     val image = +image(detail.imageUrl!!)
                     if (image != null) {
-                        DrawImage(image)
+                        Container(modifier = Expanded) {
+                            SimpleImage(image)
+                        }
                     } else {
                         ShowProgress()
                     }
