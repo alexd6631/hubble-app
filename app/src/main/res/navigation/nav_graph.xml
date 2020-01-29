@@ -15,5 +15,7 @@
     <fragment
             android:id="@+id/pictureDetailFragment"
             android:name="io.mkp.hubbleapp.PictureDetailFragment"
-            android:label="PictureDetailFragment" />
+            android:label="PictureDetailFragment" >
+            <argument android:name="id" app:argType="string" />
+    </fragment>
 </navigation>

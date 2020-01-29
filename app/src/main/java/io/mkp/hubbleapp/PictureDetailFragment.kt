@@ -15,6 +15,8 @@ import androidx.ui.layout.MainAxisAlignment
 import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.MaterialTheme
 import io.mkp.hubbleapp.utils.image
+import io.mkp.hubbleapp.utils.observe
+import io.monkeypatch.konfetti.mvvm.livedata.toLivedata
 
 
 class PictureDetailFragment : Fragment() {
@@ -23,22 +25,24 @@ class PictureDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        println("Detail view created")
+        val id = arguments?.getString("id") ?: error("No id provided")
+        val viewModel = Container.pictureDetailViewModel(id)
 
         val layout = LinearLayout(requireContext())
         layout.setContent {
             MaterialTheme {
-                val image = +image("http://google.fr")
-                if (image != null) {
-                    DrawImage(image)
-                } else {
-                    Column(
-                        mainAxisAlignment = MainAxisAlignment.Center,
-                        crossAxisAlignment = CrossAxisAlignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                val detail = +observe(viewModel.detail.toLivedata)
+                if (detail != null) {
+                    val image = +image(detail.imageUrl!!)
+                    if (image != null) {
+                        DrawImage(image)
+                    } else {
+                        ShowProgress()
                     }
+                } else {
+                    ShowProgress()
                 }
+
             }
         }
         return layout
