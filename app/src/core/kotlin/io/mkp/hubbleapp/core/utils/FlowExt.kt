@@ -1,4 +1,4 @@
-package io.mkp.hubbleapp.utils
+package io.mkp.hubbleapp.core.utils
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

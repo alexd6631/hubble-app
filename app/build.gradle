@@ -98,7 +98,14 @@ kotlin {
     }
 
     sourceSets {
+        core {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+            }
+        }
+
         commonMain {
+            dependsOn core
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"

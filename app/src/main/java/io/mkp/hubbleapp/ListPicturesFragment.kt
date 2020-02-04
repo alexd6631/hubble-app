@@ -19,14 +19,13 @@ import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Divider
-import androidx.ui.material.MaterialColors
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.tooling.preview.Preview
 import io.mkp.hubbleapp.list.ListPicturesViewModel
-import io.mkp.hubbleapp.models.HubblePicture
-import io.mkp.hubbleapp.utils.observe
+import io.mkp.hubbleapp.core.models.HubblePicture
+import utils.observe
 import io.monkeypatch.konfetti.mvvm.livedata.toLivedata
 
 class ListPicturesFragment : Fragment() {
@@ -64,9 +63,9 @@ fun ListPicturesView(
     picSelected: PicSelected
 ) {
     val pics = +observe(viewModel.pictures.toLivedata)
-    val loading = +observe(viewModel.loading.toLivedata)
+    val loading = pics == null
 
-    if (loading == true) {
+    if (loading) {
         ShowProgress()
     } else {
         FlexColumn(

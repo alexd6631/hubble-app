@@ -1,6 +1,9 @@
 package io.mkp.hubbleapp.list
 
-import io.mkp.hubbleapp.models.HubblePicture
+import io.mkp.hubbleapp.core.models.HubblePicture
+import io.mkp.hubbleapp.core.models.HubblePictureDetail
+import io.mkp.hubbleapp.core.usecases.ListPicturesUseCase
+import io.mkp.hubbleapp.core.repositories.PicturesRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -40,12 +43,14 @@ internal class ListPicturesUseCaseTest {
 }
 
 class MockPicturesRepository : PicturesRepository {
-    override suspend fun getHubblePictures(): List<HubblePicture> {
+    override fun getHubblePictures() = flow {
         delay(500)
-        return listOf(
-            HubblePicture("1", "Crab Nebula", "hubble"),
-            HubblePicture("2", "Orion Nebula", "hubble"),
-            HubblePicture("3", "Illustration of exoplanet", "hubble")
+        emit(
+            listOf(
+                HubblePicture("1", "Crab Nebula", "hubble"),
+                HubblePicture("2", "Orion Nebula", "hubble"),
+                HubblePicture("3", "Illustration of exoplanet", "hubble")
+            )
         )
     }
 }

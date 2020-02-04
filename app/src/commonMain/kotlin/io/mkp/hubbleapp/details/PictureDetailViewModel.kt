@@ -1,16 +1,15 @@
 package io.mkp.hubbleapp.details
 
-import kotlinx.coroutines.CoroutineDispatcher
 import io.mkp.hubbleapp.BaseViewModel
-import io.monkeypatch.konfetti.mvvm.livedata.KLiveData
-
+import io.mkp.hubbleapp.core.repositories.PictureDetailRepository
+import kotlinx.coroutines.CoroutineDispatcher
 
 class PictureDetailViewModel(
     id: String,
     uiDispatcher: CoroutineDispatcher,
-    useCase: PictureDetailUseCase
+    repository: PictureDetailRepository
 ) : BaseViewModel(uiDispatcher) {
-    val detail = useCase.getPictureDetail(id).asLiveData()
+    val detail = repository.getPictureDetail(id).asLiveData()
 
     override fun onDestroy() {}
 

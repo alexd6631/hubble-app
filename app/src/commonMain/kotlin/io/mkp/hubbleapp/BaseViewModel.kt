@@ -45,11 +45,3 @@ abstract class BaseViewModel(
 
     var swiftData: Any? = null
 }
-
-fun <T> KLiveData<T>.loading(): KLiveData<Boolean> = KMediatorLiveData<Boolean>().apply {
-    value = true
-    addSource(this@loading) {
-        value = false
-        removeSource(this@loading)
-    }
-}

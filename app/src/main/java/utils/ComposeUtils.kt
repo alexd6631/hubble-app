@@ -1,4 +1,4 @@
-package io.mkp.hubbleapp.utils
+package utils
 
 import android.graphics.Bitmap
 import android.os.Build

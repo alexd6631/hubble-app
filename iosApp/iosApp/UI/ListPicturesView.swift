@@ -14,13 +14,14 @@ struct ListPicturesView: View {
     @ObservedObject var viewModel: ListPicturesViewModel
 
     var body: some View {
-        let pictures: [HubblePicture] = viewModel.pictures.value as? [HubblePicture] ?? []
-        let loading = viewModel.loading.value?.boolValue ?? false
+        let pictures: [HubblePicture]? = viewModel.pictures.value as! [HubblePicture]?
+        
+        let loading = pictures == nil
 
         return Group {
             ListPicturesViewContent(
                 filter: bindingFor(ld: viewModel.filter),
-                pictures: pictures, loading: loading
+                pictures: pictures ?? [], loading: loading
             )
             Text("Default view")
         }
@@ -95,10 +96,6 @@ fileprivate struct HubblePictureRow : View {
 
 func createListPictureView() -> ListPicturesView {
     createListPictureView(viewModel: Container().listPicturesViewModel())
-}
-
-func createListPictureViewMock() -> ListPicturesView {
-    createListPictureView(viewModel: Container().mockListPicturesViewModel())
 }
 
 func createListPictureView(viewModel: ListPicturesViewModel) -> ListPicturesView {
